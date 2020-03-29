@@ -12,21 +12,25 @@ std::promise对象与其管理的std::future对象共享数据。
 #include <iostream>
 #include <thread>
 #include <future>
- 
-void initiazer(std::promise<int>* promObj){
-	std::cout<<"Inside Thread"<<std::endl;
+#include <chrono>
+using namespace std::chrono;
+
+void initiazer(std::promise<int>* promObj) {
+	std::cout << "Inside Thread" << std::endl;
+	std::this_thread::sleep_until(system_clock::now() + seconds(3));
 	promObj->set_value(35);
 }
- 
-int main(){
+
+int main() {
 	std::promise<int> promiseObj;
 	std::future<int> futureObj = promiseObj.get_future();
 	std::thread th(initiazer, &promiseObj);
-	std::cout<<futureObj.get()<<std::endl;
+	std::this_thread::sleep_until(system_clock::now() + seconds(1));	
+	std::cout << futureObj.get() << std::endl;
+	std::cout << "Not executing until future object is gottten!" << std::endl;
 	th.join();
- 
+
 	return 0;
 }
-
 
 ```
